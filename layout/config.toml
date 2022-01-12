@@ -1,0 +1,19 @@
+Name = "ugwinst0"
+Host = "0.0.0.0"
+Port = 8080
+LogLevel = "info"
+Loggers = ["app", "tx", "detail"]
+LogDir = "log/ugwinst0"
+MaxConnections = 100
+
+[[OutBound]]
+Name = "ob0"
+Host = "192.168.56.103"
+Protocol = "tcp"
+Port = 8080
+
+[[OutBound]]
+Name = "ob1"
+Host = "192.168.56.104"
+Protocol = "tcp"
+Port = 8081
