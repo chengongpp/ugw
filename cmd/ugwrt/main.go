@@ -38,12 +38,14 @@ func main() {
 	if generateConfig != "" {
 		confFile, err := os.Create(generateConfig)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "create config file failed: %v\n", err)
+			_, _ = fmt.Fprintf(os.Stderr, "create config file failed: %v\n", err)
 			os.Exit(1)
 		}
-		defer confFile.Close()
+		defer func(confFile *os.File) {
+			_ = confFile.Close()
+		}(confFile)
 		if _, err := confFile.WriteString(configTmpl); err != nil {
-			fmt.Fprintf(os.Stderr, "write config file failed: %v\n", err)
+			_, _ = fmt.Fprintf(os.Stderr, "write config file failed: %v\n", err)
 			os.Exit(1)
 		}
 		os.Exit(0)
@@ -55,16 +57,16 @@ func main() {
 
 	if _, err := os.Stat(configPath); err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			fmt.Fprintf(os.Stderr, "Config file %s not found. -h For help\n", configPath)
+			_, _ = fmt.Fprintf(os.Stderr, "Config file %s not found. -h For help\n", configPath)
 			os.Exit(1)
 		} else {
-			fmt.Fprintf(os.Stderr, "Config file %s open failed.\n", configPath)
+			_, _ = fmt.Fprintf(os.Stderr, "Config file %s open failed.\n", configPath)
 			os.Exit(1)
 		}
 	}
 
 	if _, err := toml.DecodeFile(configPath, &conf); err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing config file: %v\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "Error parsing config file: %v\n", err)
 		os.Exit(1)
 	}
 	var level log.Level
@@ -114,7 +116,7 @@ func main() {
 		for i, filename := range logPaths {
 			logFile, err := os.OpenFile(conf.LogDir+"/"+filename, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error opening log file: %v\n", err)
+				_, _ = fmt.Fprintf(os.Stderr, "Error opening log file: %v\n", err)
 				os.Exit(1)
 			}
 			loggers[i].SetOutput(logFile)
@@ -131,5 +133,5 @@ func main() {
 		Logger:         loggers,
 		OutBounds:      conf.OutBounds,
 	}
-	runtime.Run()
+	_ = runtime.Run()
 }

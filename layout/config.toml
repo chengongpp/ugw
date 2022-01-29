@@ -1,6 +1,8 @@
 Name = "ugwinst0"
 Host = "0.0.0.0"
 Port = 8080
+CtrlHost = "127.0.0.1"
+CtrlPort = 8081
 LogLevel = "info"
 Loggers = ["app", "tx", "detail"]
 LogDir = "log/ugwinst0"

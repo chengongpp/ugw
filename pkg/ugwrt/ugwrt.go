@@ -76,7 +76,12 @@ func (rt *RtInstance) MainLoop(mainCh chan error) {
 		return
 	}
 	rt.Log(AppLog, log.InfoLevel, "ListenTCP on %s:%d", rt.Host, rt.Port)
-	defer listener.Close()
+	defer func(listener net.Listener) {
+		err := listener.Close()
+		if err != nil {
+			rt.Log(AppLog, log.ErrorLevel, "Close failed: %v", err)
+		}
+	}(listener)
 	// Main loop
 	for {
 		conn, err := listener.Accept()
@@ -90,12 +95,32 @@ func (rt *RtInstance) MainLoop(mainCh chan error) {
 	}
 }
 
-func (rt *RtInstance) HandleConn(conn net.Conn) error {
-	return nil
+func (rt *RtInstance) HandleConn(conn net.Conn) {
+	defer func(conn net.Conn) {
+		err := conn.Close()
+		if err != nil {
+			rt.Log(AppLog, log.ErrorLevel, "Close failed: %v", err)
+		}
+	}(conn)
+	// Resolve inbound message
+	msg, err := rt.ResolveInbound(conn)
+	if err != nil {
+		rt.Log(AppLog, log.ErrorLevel, "ResolveInbound failed: %v", err)
+		return
+	}
+	// Do custom operations
+	// Construct outbound message
+	// Send outbound message
 }
 
-func (rt *RtInstance) CtrlLoop(mainCh chan error) error {
-	return nil
+func (rt *RtInstance) ResolveInbound(conn net.Conn) ([]byte, error) {
+	// TODO
+	return nil, nil
+}
+
+func (rt *RtInstance) CtrlLoop(mainCh chan error) {
+	// Accept control commands
+	return
 }
 
 func (rt *RtInstance) CtrlCmdHandler(signal []byte) error {
