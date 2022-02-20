@@ -1,0 +1,4 @@
+syntax = "proto3";
+
+package ugw.msg;
+option go_package = "github.com/chengongpp/ugw/pkg/messages";

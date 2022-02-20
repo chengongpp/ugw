@@ -8,3 +8,5 @@ require (
 	github.com/BurntSushi/toml v0.4.1
 	golang.org/x/sys v0.0.0-20191026070338-33540a1f6037 // indirect
 )
+
+require google.golang.org/protobuf v1.27.1 // indirect

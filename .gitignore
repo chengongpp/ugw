@@ -21,3 +21,6 @@ log/
 
 # Go workspace file
 go.work
+
+*.pb.go
+*/tmp

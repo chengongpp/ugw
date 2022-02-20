@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package ugw;
+
+option go_package = "github.com/chengongpp/ugw/pkg/messages";
+
+import "google/protobuf/descriptor.proto";
+
+enum FieldAlignment {
+  UNSPECIFIED = 0;
+  LEFT = 1;
+  CENTER = 2;
+  RIGHT = 3;
+}
+
+enum MessageFormat {
+  RAW = 0;
+  JSON = 1;
+  XML = 2;
+  FORM = 3;
+  PROTOBUF = 4;
+}
+
+extend google.protobuf.MessageOptions {
+  optional MessageFormat message_format = 22001;
+}
+
+extend google.protobuf.FieldOptions {
+  string field_length = 22101;
+  FieldAlignment field_alignment = 22102;
+  string field_default = 22103;
+  string field_padding = 22104;
+  string field_delimiter = 22105;
+  string max_repeats = 22106;
+}
+
+message MsgIn0 {
+  option (ugw.message_format) = RAW;
+  string length = 1 [(ugw.field_length) = "8", (ugw.field_alignment) = LEFT, (ugw.field_padding) = " "];
+  string from_system = 2 [(ugw.field_length) = "2"];
+  string to_system = 3 [(ugw.field_length) = "2"];
+  string unused = 4 [(ugw.field_length) = "4"];
+  string txcode = 5 [(ugw.field_length) = "6"];
+  string paddings = 6 [(ugw.field_length) = "13"];
+  JsonMsgIn json_msg = 7 [(ugw.field_length) = "$(atoi(MsgIn0.length) - 35)"];
+}
+
+message JsonMsgIn {
+  option (ugw.message_format) = JSON;
+  string name = 1;
+  string card_number = 2;
+  uint64 seq = 3;
+  repeated TxMsgIn card_txs = 4 [(ugw.max_repeats) = "-1"];
+}
+
+message TxMsgIn {
+  float amount = 1;
+  uint64 timestamp = 2;
+  string channel_id = 3;
+  string card_number = 4;
+}

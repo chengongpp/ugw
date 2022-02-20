@@ -43,7 +43,7 @@ const (
 
 func (rt *RtInstance) Log(logger int, level log.Level, format string, args ...interface{}) {
 	if rt.Logger[logger] != nil {
-		rt.Logger[logger].Printf(format, args...)
+		rt.Logger[logger].Logf(level, format, args...)
 	}
 }
 
@@ -103,7 +103,7 @@ func (rt *RtInstance) HandleConn(conn net.Conn) {
 		}
 	}(conn)
 	// Resolve inbound message
-	msg, err := rt.ResolveInbound(conn)
+	_, err := rt.ResolveInbound(conn)
 	if err != nil {
 		rt.Log(AppLog, log.ErrorLevel, "ResolveInbound failed: %v", err)
 		return
@@ -115,6 +115,7 @@ func (rt *RtInstance) HandleConn(conn net.Conn) {
 
 func (rt *RtInstance) ResolveInbound(conn net.Conn) ([]byte, error) {
 	// TODO
+
 	return nil, nil
 }
 

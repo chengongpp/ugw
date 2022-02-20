@@ -17,3 +17,7 @@ Name = "ob1"
 Host = "192.168.56.104"
 Protocol = "tcp"
 Port = 8081
+
+[[Message]]
+Name = "msg0"
+Definition = "msg0.proto"
