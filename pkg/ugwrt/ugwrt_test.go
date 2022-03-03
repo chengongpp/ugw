@@ -18,7 +18,19 @@ func TestUgwRuntime(t *testing.T) {
 		MaxConnections: 0,
 		LogLevel:       log.DebugLevel,
 		Logger:         nil,
-		OutBounds:      nil,
-		Statics:        nil,
+		Outbounds:      nil,
+		Stats:          nil,
+	}
+	rt.Run()
+}
+
+func TestResolveProtos(t *testing.T) {
+	config := Config{
+		LogLevel: "debug",
+	}
+	rt := NewRtInstance(config)
+	_, err := rt.ResolveProtos("C:\\Users\\cheng\\IdeaProjects\\ugw\\layout/messages/")
+	if err != nil {
+		t.Error("ResolveProtos failed")
 	}
 }

@@ -4,8 +4,9 @@ type Config struct {
 	Name           string `toml:"Name"`
 	Host           string `toml:"Host"`
 	Port           int    `toml:"Port"`
+	Protocol       string `toml:"Protocol"`
 	LogLevel       string `toml:"LogLevel"`
 	LogDir         string `toml:"LogDir"`
 	MaxConnections int    `toml:"MaxConnections"`
-	OutBounds      []OutBound
+	OutBounds      []Outbound
 }
