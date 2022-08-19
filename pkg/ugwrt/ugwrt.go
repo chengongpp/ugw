@@ -32,32 +32,6 @@ type RtInstance struct {
 	Inbound        Inbound
 }
 
-func (rt *RtInstance) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
-	rt.Log(TxLog, log.InfoLevel, "Host=[%s] Protocol=[%s] Message=[%s]", request.Host, rt.Protocol, rt.Inbound.MessageFormat)
-	switch rt.Protocol {
-	case "httpJson":
-		body, err := io.ReadAll(request.Body)
-		if err != nil {
-
-		}
-		err = json.Unmarshal(body, make(interface{}, 1))
-		if err != nil {
-
-		}
-		panic("")
-	case "httpForm":
-		panic("")
-	case "httpXml":
-		panic("")
-	case "httpQuery":
-		panic("")
-	default:
-		//TODO customized content protocol
-	}
-	//TODO implement me
-	panic("implement me")
-}
-
 type Inbound struct {
 	Name           string
 	Host           string
@@ -99,7 +73,7 @@ func NewRtInstance(conf Config) *RtInstance {
 	case "trace":
 		level = log.FatalLevel
 	default:
-		fmt.Fprintf(os.Stderr, "Invalid log level: %s\n", conf.LogLevel)
+		_, _ = fmt.Fprintf(os.Stderr, "Invalid log level: %s\n", conf.LogLevel)
 	}
 	log.SetLevel(level)
 
@@ -124,6 +98,13 @@ func NewRtInstance(conf Config) *RtInstance {
 		detailLogger.SetOutput(os.Stdout)
 		traceLogger.SetOutput(os.Stdout)
 	default:
+		if _, err := os.Stat(conf.LogDir); os.IsNotExist(err) {
+			err := os.MkdirAll(conf.LogDir, 0755)
+			if err != nil {
+				_, _ = fmt.Fprintf(os.Stderr, "Error creating log directory: %v\n", err)
+				os.Exit(1)
+			}
+		}
 		logPaths := []string{
 			"app.log",
 			"tx.log",
@@ -263,4 +244,27 @@ func (rt *RtInstance) CtrlLoop(mainCh chan error) {
 
 func (rt *RtInstance) CtrlCmdHandler(signal []byte) error {
 	return nil
+}
+
+func (rt *RtInstance) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+	rt.Log(TxLog, log.InfoLevel, "Host=[%s] Protocol=[%s] Message=[%s]", request.RemoteAddr, rt.Protocol, rt.Inbound.MessageFormat)
+	switch rt.Protocol {
+	case "http":
+		body, err := io.ReadAll(request.Body)
+		if err != nil {
+
+		}
+		dynBody := make(map[string]interface{}, 1)
+		err = json.Unmarshal(body, &dynBody)
+		if err != nil {
+			rt.Log(TxLog, log.ErrorLevel, "Json unmarshal error: Error=[%v] Body=[%s]", err, string(body))
+		}
+		rt.Log(DetailLog, log.InfoLevel, "%s", dynBody)
+	case "httpQuery":
+		panic("")
+	default:
+		//TODO customized content protocol
+	}
+	writer.WriteHeader(418)
+	writer.Write([]byte("I'm not a teapot"))
 }

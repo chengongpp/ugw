@@ -5,6 +5,7 @@ Protocol = "http"
 LogLevel = "info"
 Loggers = ["app", "tx", "detail"]
 LogDir = "log/ugwinst0"
+WorkingDir = "./"
 MaxConnections = 100
 
 [[OutBound]]
@@ -18,7 +19,3 @@ Name = "ob1"
 Host = "192.168.56.104"
 Protocol = "tcp"
 Port = 8081
-
-[[Message]]
-Name = "msg0"
-Definition = "msg0.proto"

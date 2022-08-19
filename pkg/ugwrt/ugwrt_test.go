@@ -21,7 +21,10 @@ func TestUgwRuntime(t *testing.T) {
 		Outbounds:      nil,
 		Stats:          nil,
 	}
-	rt.Run()
+	err := rt.Run()
+	if err != nil {
+		return
+	}
 }
 
 func TestResolveProtos(t *testing.T) {
@@ -29,7 +32,7 @@ func TestResolveProtos(t *testing.T) {
 		LogLevel: "debug",
 	}
 	rt := NewRtInstance(config)
-	_, err := rt.ResolveProtos("C:\\Users\\cheng\\IdeaProjects\\ugw\\layout/messages/")
+	_, err := rt.ResolveProtos("C://Users/cheng/IdeaProjects/ugw/layout/messages/")
 	if err != nil {
 		t.Error("ResolveProtos failed")
 	}

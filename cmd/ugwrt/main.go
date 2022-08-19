@@ -67,4 +67,10 @@ func main() {
 		os.Exit(1)
 	}
 
+	rt := ugwrt.NewRtInstance(conf)
+	err := rt.Run()
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "Error running rt: %v\n", err)
+		os.Exit(1)
+	}
 }
